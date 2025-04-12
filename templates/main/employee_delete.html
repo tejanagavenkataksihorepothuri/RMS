@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Delete Employee</h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">Warning!</h5>
+                        <p>Are you sure you want to delete {{ employee.get_full_name }}?</p>
+                        <p class="mb-0">This action cannot be undone.</p>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">Employee Details</h6>
+                            <p><strong>ID Number:</strong> {{ employee.id_number }}</p>
+                            <p><strong>Name:</strong> {{ employee.get_full_name }}</p>
+                            <p><strong>Email:</strong> {{ employee.email }}</p>
+                            <p><strong>Role:</strong> {{ employee.get_role_display }}</p>
+                            <p><strong>Department:</strong> {{ employee.department.name }}</p>
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="text-center">
+                            <a href="{% url 'employee_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Delete Employee</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

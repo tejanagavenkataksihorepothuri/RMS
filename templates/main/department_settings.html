@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Department Settings - {{ department.name }}</h6>
+                </div>
+                <div class="card-body">
+                    <!-- Department Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Department Information</h5>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td>{{ department.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Code:</th>
+                                    <td>{{ department.code }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Subjects -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5>Department Subjects</h5>
+                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSubjectModal">
+                                    <i class="fas fa-plus"></i> Add Subject
+                                </button>
+                            </div>
+                            {% if subjects %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Academic Year</th>
+                                            <th>Semester</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for subject in subjects %}
+                                        <tr>
+                                            <td>{{ subject.code }}</td>
+                                            <td>{{ subject.name }}</td>
+                                            <td>{{ subject.academic_year.get_name_display }}</td>
+                                            <td>{{ subject.semester.get_name_display }}</td>
+                                            <td>
+                                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editSubjectModal{{ subject.id }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteSubjectModal{{ subject.id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-center">No subjects found for this department.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Subject Modal -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Subject</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_subject">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="subject_code">Subject Code</label>
+                        <input type="text" class="form-control" id="subject_code" name="code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject_name">Subject Name</label>
+                        <input type="text" class="form-control" id="subject_name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="academic_year">Academic Year</label>
+                        <select class="form-control" id="academic_year" name="academic_year" required>
+                            <option value="">Select Academic Year</option>
+                            {% for year in academic_years %}
+                            <option value="{{ year.id }}">{{ year.get_name_display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester">Semester</label>
+                        <select class="form-control" id="semester" name="semester" required>
+                            <option value="">Select Semester</option>
+                            {% for sem in semesters %}
+                            <option value="{{ sem.id }}">{{ sem.get_name_display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Subject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

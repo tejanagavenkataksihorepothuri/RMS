@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Usha Rama College of Engineering Resource Management System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-3">Contact Us</h1>
+            <p class="lead text-muted">Get in touch with us for any queries or support</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Contact Information -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-primary mb-4">Contact Information</h3>
+                    
+                    <div class="mb-4">
+                        <h5><i class="fas fa-map-marker-alt me-2 text-primary"></i>Address</h5>
+                        <p class="ms-4 mb-0">Usha Rama College of Engineering</p>
+                        <p class="ms-4 mb-0">Telaprolu, Krishna District</p>
+                        <p class="ms-4 mb-0">Andhra Pradesh - 521109</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-phone me-2 text-primary"></i>Phone</h5>
+                        <p class="ms-4 mb-0">Main Office: +91 8008888111</p>
+                        <p class="ms-4 mb-0">Support: +91 8008888222</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-envelope me-2 text-primary"></i>Email</h5>
+                        <p class="ms-4 mb-0">info@urce.edu.in</p>
+                        <p class="ms-4 mb-0">support@urce.edu.in</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><i class="fas fa-clock me-2 text-primary"></i>Working Hours</h5>
+                        <p class="ms-4 mb-0">Monday - Saturday: 9:00 AM - 5:00 PM</p>
+                        <p class="ms-4 mb-0">Sunday: Closed</p>
+                    </div>
+
+                    <div class="social-links mt-4">
+                        <h5><i class="fas fa-share-alt me-2 text-primary"></i>Follow Us</h5>
+                        <div class="ms-4">
+                            <a href="#" class="btn btn-outline-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="btn btn-outline-primary me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="btn btn-outline-primary me-2"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="btn btn-outline-primary"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-primary mb-4">Send us a Message</h3>
+                    
+                    <form id="contactForm" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select class="form-select" id="department" required>
+                                <option value="">Select Department</option>
+                                <option value="cse">Computer Science & Engineering</option>
+                                <option value="ece">Electronics & Communication Engineering</option>
+                                <option value="eee">Electrical & Electronics Engineering</option>
+                                <option value="mech">Mechanical Engineering</option>
+                                <option value="civil">Civil Engineering</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="5" required></textarea>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3827.8989657888483!2d80.55238661486557!3d16.397999088675574!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a35f0a2a7d81943%3A0x8ba5d78f65df94b8!2sUsha%20Rama%20College%20Of%20Engineering%20and%20Technology!5e0!3m2!1sen!2sin!4v1647850821986!5m2!1sen!2sin" 
+                            width="100%" 
+                            height="450" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.text-primary {
+    color: #1e3c72 !important;
+}
+
+.social-links .btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    line-height: 40px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.social-links .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(30,60,114,.25);
+    border-color: #1e3c72;
+}
+
+.btn-primary {
+    background-color: #1e3c72;
+    border-color: #1e3c72;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #2a5298;
+    border-color: #2a5298;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+</style>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Add your form submission logic here
+    alert('Thank you for your message. We will get back to you soon!');
+    this.reset();
+});
+</script>
+{% endblock %} 

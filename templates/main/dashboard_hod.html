@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}HOD Dashboard - {{ request.user.department }} Department{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <i class="fas fa-tachometer-alt text-primary mr-2"></i>
+                        Welcome, {{ request.user.get_full_name }}
+                    </h4>
+                    <p class="card-text">
+                        Head of Department - {{ request.user.department }} Department
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Faculty Count -->
+        <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <div class="card dashboard-card card-faculty h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Faculty Members</h6>
+                            <h4 class="mb-0">{{ faculty_count }}</h4>
+                        </div>
+                        <div class="icon-shape bg-light text-primary rounded-circle">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <div class="card dashboard-card h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">Quick Actions</h6>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'department_settings' %}" class="btn btn-outline-primary btn-sm mb-2">
+                            <i class="fas fa-cog mr-1"></i> Department Settings
+                        </a>
+                        <a href="{% url 'upload_resource' %}" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-upload mr-1"></i> Upload Resource
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Count -->
+        <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <div class="card dashboard-card card-resources h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Resources</h6>
+                            <h4 class="mb-0">{{ resource_count }}</h4>
+                        </div>
+                        <div class="card-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    </div>
+                    <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline-secondary mt-3">
+                        <i class="fas fa-file-alt mr-1"></i> View Resources
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects Count -->
+        <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <div class="card dashboard-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Subjects</h6>
+                            <h4 class="mb-0">{{ subject_count }}</h4>
+                        </div>
+                        <div class="card-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-outline-secondary mt-3">
+                        <i class="fas fa-list mr-1"></i> View Subjects
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Count -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card card-students h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Students</h6>
+                            <h4 class="mb-0">{{ student_count }}</h4>
+                        </div>
+                        <div class="card-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-outline-secondary mt-3">
+                        <i class="fas fa-users mr-1"></i> View Students
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt text-warning mr-2"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'add_faculty_hod' %}" class="btn btn-success btn-block">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                Add Faculty
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'add_subject' %}" class="btn btn-info btn-block">
+                                <i class="fas fa-book-medical mr-2"></i>
+                                Add Subject
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="#" class="btn btn-secondary btn-block">
+                                <i class="fas fa-cog mr-2"></i>
+                                Department Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="row">
+        <!-- Recent Resources -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock text-info mr-2"></i>
+                        Recent Resources
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_resources %}
+                        <div class="list-group list-group-flush">
+                            {% for resource in recent_resources %}
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ resource.title }}</h6>
+                                        <small>{{ resource.created_at|timesince }} ago</small>
+                                    </div>
+                                    <p class="mb-1">{{ resource.description|truncatechars:100 }}</p>
+                                    <small>Uploaded by {{ resource.uploaded_by.get_full_name }}</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No recent resources available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Faculty Activity -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-clock text-success mr-2"></i>
+                        Faculty Activity
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if faculty_activities %}
+                        <div class="list-group list-group-flush">
+                            {% for activity in faculty_activities %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ activity.faculty.get_full_name }}</h6>
+                                        <small>{{ activity.timestamp|timesince }} ago</small>
+                                    </div>
+                                    <p class="mb-1">{{ activity.description }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No recent faculty activity.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

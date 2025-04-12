@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - Usha Rama College of Engineering Resource Management System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-3">About URCE Resource Management</h1>
+            <p class="lead text-muted">Empowering education through digital resource management</p>
+        </div>
+    </div>
+
+    <!-- Mission & Vision Section -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-primary">
+                        <i class="fas fa-bullseye me-2"></i>Our Mission
+                    </h3>
+                    <p class="card-text">To provide a comprehensive digital platform that streamlines the management and distribution of educational resources, fostering an environment of collaborative learning and academic excellence at Usha Rama College of Engineering.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-primary">
+                        <i class="fas fa-eye me-2"></i>Our Vision
+                    </h3>
+                    <p class="card-text">To revolutionize educational resource management by creating an integrated digital ecosystem that enhances the learning experience for students and facilitates effective teaching methodologies for faculty.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Features Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">Key Features</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-primary mb-3">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <h4>Role-Based Access</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Student access to learning materials</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Faculty resource management</li>
+                        <li><i class="fas fa-check text-success me-2"></i>HOD department oversight</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Principal administrative control</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-primary mb-3">
+                        <i class="fas fa-book fa-2x"></i>
+                    </div>
+                    <h4>Resource Management</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Digital study materials</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Lecture notes and presentations</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Assignment submissions</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Educational videos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-primary mb-3">
+                        <i class="fas fa-shield-alt fa-2x"></i>
+                    </div>
+                    <h4>Security & Organization</h4>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Secure file storage</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Department-wise organization</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Version control</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Access logging</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Institution Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">About Usha Rama College of Engineering</h2>
+                    <p class="card-text">Usha Rama College of Engineering and Technology (URCET) was established in 2008 under the aegis of Sai Durga Educational Society. The college is approved by AICTE, New Delhi and affiliated to JNTUK, Kakinada. The college offers various undergraduate and postgraduate programs in engineering and technology.</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-graduation-cap me-2 text-primary"></i>Programs Offered</h5>
+                            <ul>
+                                <li>Computer Science and Engineering</li>
+                                <li>Electronics and Communication Engineering</li>
+                                <li>Electrical and Electronics Engineering</li>
+                                <li>Mechanical Engineering</li>
+                                <li>Civil Engineering</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-star me-2 text-primary"></i>Our Strengths</h5>
+                            <ul>
+                                <li>Experienced faculty members</li>
+                                <li>State-of-the-art infrastructure</li>
+                                <li>Industry collaboration</li>
+                                <li>Research opportunities</li>
+                                <li>Placement assistance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.text-primary {
+    color: #1e3c72 !important;
+}
+
+.list-unstyled li {
+    margin-bottom: 0.5rem;
+}
+
+.display-4 {
+    font-weight: 700;
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,7 @@
+Django==5.1.7
+django-crispy-forms==2.3
+django-import-export==4.3.7
+Pillow==11.1.0
+tablib==3.8.0
+diff-match-patch==20241021 
+crispy_bootstrap4

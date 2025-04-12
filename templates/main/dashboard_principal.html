@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Principal Dashboard - Usha Rama College of Engineering Resource Management System{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Principal Dashboard</h1>
+</div>
+
+<div class="row">
+    <!-- HODs Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card dashboard-card card-hods h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">HODs</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_hods }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-tie fa-2x text-gray-300 card-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light">
+                <a href="{% url 'employee_list' %}" class="text-primary">View Details <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card dashboard-card card-faculty h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Faculty</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_faculty }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chalkboard-teacher fa-2x text-gray-300 card-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light">
+                <a href="{% url 'employee_list' %}" class="text-success">View Details <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card dashboard-card card-students h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Students</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-graduate fa-2x text-gray-300 card-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light">
+                <span class="text-warning">Total Registered Students</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resources Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card dashboard-card card-resources h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Resources</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_resources }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-alt fa-2x text-gray-300 card-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light">
+                <a href="{% url 'resource_list' %}" class="text-danger">View Resources <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'add_faculty' %}" class="btn btn-primary btn-block">
+                            <i class="fas fa-user-plus mr-2"></i>Add Employee
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'bulk_add_employees' %}" class="btn btn-success btn-block">
+                            <i class="fas fa-file-upload mr-2"></i>Bulk Add Employees
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'add_department' %}" class="btn btn-secondary btn-block">
+                            <i class="fas fa-building mr-2"></i>Add Department
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'upload_resource' %}" class="btn btn-warning btn-block">
+                            <i class="fas fa-upload mr-2"></i>Upload Resource
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'resource_list' %}" class="btn btn-info btn-block">
+                            <i class="fas fa-search mr-2"></i>Browse Resources
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Departments</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for department in departments %}
+                            <tr>
+                                <td>{{ department.name }}</td>
+                                <td>{{ department.code }}</td>
+                                <td>
+                                    <a href="{% url 'resource_list' %}?department={{ department.id }}" class="btn btn-sm btn-primary" data-toggle="tooltip" title="View Resources">
+                                        <i class="fas fa-file-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No departments found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Departments</h6>
+            </div>
+            <div class="card-body">
+                {% if departments %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dept in departments %}
+                                <tr>
+                                    <td>{{ dept.name }}</td>
+                                    <td>{{ dept.code }}</td>
+                                    <td>
+                                        <a href="{% url 'delete_department' dept.code %}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center">No departments found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

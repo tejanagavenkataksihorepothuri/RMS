@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard - Usha Rama College of Engineering Resource Management System{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Student Dashboard</h1>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Find Resources</h6>
+    </div>
+    <div class="card-body">
+        <form method="get" action="{% url 'dashboard' %}" id="filterForm">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="department">Department</label>
+                    <select class="form-control" id="department" name="department">
+                        <option value="">Select Department</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}" {% if request.GET.department == dept.id|stringformat:"i" %}selected{% endif %}>{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="academic_year">Academic Year</label>
+                    <select class="form-control" id="academic_year" name="academic_year">
+                        <option value="">Select Academic Year</option>
+                        {% for year in academic_years %}
+                        <option value="{{ year.id }}" {% if request.GET.academic_year == year.id|stringformat:"i" %}selected{% endif %}>{{ year.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="semester">Semester</label>
+                    <select class="form-control" id="semester" name="semester">
+                        <option value="">Select Semester</option>
+                        {% for sem in semesters %}
+                        <option value="{{ sem.id }}" {% if request.GET.semester == sem.id|stringformat:"i" %}selected{% endif %}>{{ sem.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="subject">Subject</label>
+                    <select class="form-control" id="subject" name="subject">
+                        <option value="">Select Subject</option>
+                        {% for sub in subjects %}
+                        <option value="{{ sub.id }}" {% if request.GET.subject == sub.id|stringformat:"i" %}selected{% endif %}>{{ sub.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search mr-2"></i>Find Resources
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary ml-2">
+                        <i class="fas fa-sync-alt mr-2"></i>Reset Filters
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if selected_subject %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Resources for {{ selected_subject.name }}</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for resource in resources %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 resource-card">
+                    <div class="card-body text-center">
+                        {% if resource.is_document %}
+                        <i class="fas fa-file-pdf fa-3x mb-3 resource-icon document"></i>
+                        {% elif resource.is_video %}
+                        <i class="fas fa-file-video fa-3x mb-3 resource-icon video"></i>
+                        {% elif resource.is_image %}
+                        <i class="fas fa-file-image fa-3x mb-3 resource-icon image"></i>
+                        {% else %}
+                        <i class="fas fa-file-alt fa-3x mb-3 resource-icon other"></i>
+                        {% endif %}
+                        <h5 class="card-title">{{ resource.title }}</h5>
+                        <p class="card-text small text-muted">
+                            <i class="fas fa-user mr-1"></i> {{ resource.uploaded_by.get_full_name }}
+                            <br>
+                            <i class="fas fa-calendar-alt mr-1"></i> {{ resource.created_at|date:"M d, Y" }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <div class="btn-group btn-block">
+                            <a href="{% url 'resource_detail' resource.id %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </a>
+                            <a href="{% url 'download_resource' resource.id %}" class="btn btn-sm btn-success">
+                                <i class="fas fa-download mr-1"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle mr-2"></i> No resources found for this subject.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% elif request.GET.subject %}
+<div class="alert alert-warning">
+    <i class="fas fa-exclamation-triangle mr-2"></i> No resources found for the selected subject.
+</div>
+{% endif %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Handle filter changes
+        $('#department, #academic_year, #semester').change(function() {
+            var department = $('#department').val();
+            var academicYear = $('#academic_year').val();
+            var semester = $('#semester').val();
+            
+            if (department || academicYear || semester) {
+                // Get subjects based on selected filters
+                $.ajax({
+                    url: '{% url "get_subjects" %}',
+                    data: {
+                        'department': department,
+                        'academic_year': academicYear,
+                        'semester': semester
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var subjectSelect = $('#subject');
+                        subjectSelect.empty();
+                        subjectSelect.append('<option value="">Select Subject</option>');
+                        
+                        $.each(data.subjects, function(index, subject) {
+                            subjectSelect.append('<option value="' + subject.id + '">' + subject.name + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %} 

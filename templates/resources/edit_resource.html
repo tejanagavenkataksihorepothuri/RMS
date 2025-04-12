@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Edit Resource</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="title">Title*</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ resource.title }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3">{{ resource.description }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="resource_type">Resource Type*</label>
+                            <select class="form-control" id="resource_type" name="resource_type" required>
+                                <option value="">Select Resource Type</option>
+                                {% for type in resource_types %}
+                                <option value="{{ type.id }}" {% if type.id == resource.resource_type.id %}selected{% endif %}>
+                                    {{ type.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="department">Department*</label>
+                            <select class="form-control" id="department" required>
+                                <option value="">Select Department</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept.code }}" {% if dept.code == current_department %}selected{% endif %}>
+                                    {{ dept.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="academic_year">Academic Year*</label>
+                            <select class="form-control" id="academic_year" required>
+                                <option value="">Select Academic Year</option>
+                                {% for year in academic_years %}
+                                <option value="{{ year.name }}" {% if year.name == current_year %}selected{% endif %}>
+                                    {{ year.get_name_display }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="semester">Semester*</label>
+                            <select class="form-control" id="semester" required>
+                                <option value="">Select Semester</option>
+                                {% for sem in semesters %}
+                                <option value="{{ sem.name }}" {% if sem.name == current_semester %}selected{% endif %}>
+                                    {{ sem.get_name_display }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject*</label>
+                            <select class="form-control" id="subject" name="subject" required>
+                                <option value="{{ resource.subject.id }}">{{ resource.subject.name }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="file">File</label>
+                            <input type="file" class="form-control-file" id="file" name="file">
+                            <small class="form-text text-muted">
+                                Current file: {{ resource.file.name|default:"No file uploaded" }}<br>
+                                Only upload a new file if you want to replace the existing one.
+                            </small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Resource</button>
+                        <a href="{% url 'resource_list' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    function updateSubjects() {
+        var department = $('#department').val();
+        var year = $('#academic_year').val();
+        var semester = $('#semester').val();
+        var currentSubject = '{{ resource.subject.id }}';
+        
+        if (department && year && semester) {
+            $.get('{% url "get_subjects" %}', {
+                department: department,
+                year: year,
+                semester: semester
+            }).done(function(data) {
+                var options = '<option value="">Select Subject</option>';
+                data.subjects.forEach(function(subject) {
+                    options += '<option value="' + subject.id + '"' +
+                             (subject.id == currentSubject ? ' selected' : '') + '>' +
+                             subject.name + '</option>';
+                });
+                $('#subject').html(options);
+            });
+        }
+    }
+    
+    $('#department, #academic_year, #semester').change(updateSubjects);
+    
+    // Initial load of subjects
+    if ($('#department').val() && $('#academic_year').val() && $('#semester').val()) {
+        updateSubjects();
+    }
+});
+</script>
+{% endblock %}

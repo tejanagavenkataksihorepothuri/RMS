@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Upload Resource - Usha Rama College of Engineering Resource Management System{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Upload Resource</h1>
+    <a href="{% url 'resource_list' %}" class="d-none d-sm-inline-block btn btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Back to Resources
+    </a>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Resource Information</h6>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="title">Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="title" name="title" required>
+                <small class="form-text text-muted">Enter a descriptive title for the resource.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                <small class="form-text text-muted">Provide a brief description of the resource.</small>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="department">Department <span class="text-danger">*</span></label>
+                        <select class="form-control" id="department" name="department" required {% if not user.is_principal %}disabled{% endif %}>
+                            <option value="">Select Department</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.id }}" {% if user.department == dept %}selected{% endif %}>{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="academic_year">Academic Year <span class="text-danger">*</span></label>
+                        <select class="form-control" id="academic_year" name="academic_year" required>
+                            <option value="">Select Academic Year</option>
+                            {% for year in academic_years %}
+                            <option value="{{ year.id }}">{{ year.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="semester">Semester <span class="text-danger">*</span></label>
+                        <select class="form-control" id="semester" name="semester" required>
+                            <option value="">Select Semester</option>
+                            {% for sem in semesters %}
+                            <option value="{{ sem.id }}">{{ sem.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="subject">Subject <span class="text-danger">*</span></label>
+                        <select class="form-control" id="subject" name="subject" required>
+                            <option value="">Select Subject</option>
+                            {% for sub in subjects %}
+                            <option value="{{ sub.id }}">{{ sub.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="resource_type">Resource Type <span class="text-danger">*</span></label>
+                        <select class="form-control" id="resource_type" name="resource_type" required>
+                            <option value="">Select Resource Type</option>
+                            {% for type in resource_types %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="file">File <span class="text-danger">*</span></label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="file" name="file" required>
+                    <label class="custom-file-label" for="file">Choose file</label>
+                </div>
+                <small class="form-text text-muted">Upload the resource file (PDF, DOC, PPT, Video, etc.).</small>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle mr-2"></i>
+                {% if user.is_principal or user.is_hod %}
+                Your uploaded resource will be automatically approved.
+                {% else %}
+                Your uploaded resource will need to be approved by your HOD or the Principal before it becomes visible to students.
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-upload mr-2"></i>Upload Resource
+            </button>
+            <a href="{% url 'resource_list' %}" class="btn btn-secondary ml-2">Cancel</a>
+            
+            {% if not user.is_principal and user.department %}
+            <input type="hidden" id="department_hidden" value="{{ user.department.id }}">
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Update the file input label with the selected file name
+        $('.custom-file-input').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').html(fileName);
+        });
+        
+        // Handle filter changes to update subject dropdown
+        $('#department, #academic_year, #semester').change(function() {
+            var department = $('#department').val();
+            var academicYear = $('#academic_year').val();
+            var semester = $('#semester').val();
+            
+            if (department && academicYear && semester) {
+                // Get subjects based on selected filters
+                $.ajax({
+                    url: '{% url "get_subjects" %}',
+                    data: {
+                        'department': department,
+                        'academic_year': academicYear,
+                        'semester': semester
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var subjectSelect = $('#subject');
+                        subjectSelect.empty();
+                        subjectSelect.append('<option value="">Select Subject</option>');
+                        
+                        $.each(data.subjects, function(index, subject) {
+                            subjectSelect.append('<option value="' + subject.id + '">' + subject.name + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+        
+        // For non-principal users, set a hidden input with the department value
+        var departmentHidden = $('#department_hidden').val();
+        if (departmentHidden) {
+            $('form').append('<input type="hidden" name="department" value="' + departmentHidden + '">');
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 
