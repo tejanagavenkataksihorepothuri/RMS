@@ -4,33 +4,52 @@
 {% block title %}Employee List - Usha Rama College of Engineering Resource Management System{% endblock %}
 
 {% block content %}
+{% csrf_token %}
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Employee List</h1>
     {% if user.is_principal %}
-    <div>
-        <a href="{% url 'add_faculty' %}" class="d-none d-sm-inline-block btn btn-primary shadow-sm mr-2">
+    <div class="btn-group">
+        <a href="{% url 'add_faculty' %}" class="btn btn-primary shadow-sm">
             <i class="fas fa-user-plus fa-sm text-white-50 mr-1"></i> Add Employee
         </a>
-        <a href="{% url 'bulk_add_employees' %}" class="d-none d-sm-inline-block btn btn-success shadow-sm">
+        <a href="{% url 'bulk_add_employees' %}" class="btn btn-success shadow-sm">
             <i class="fas fa-file-upload fa-sm text-white-50 mr-1"></i> Bulk Add
+        </a>
+        <a href="{% url 'export_employees' %}" class="btn btn-info shadow-sm">
+            <i class="fas fa-file-export fa-sm text-white-50 mr-1"></i> Export
         </a>
     </div>
     {% endif %}
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Employees</h6>
-        <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                <div class="dropdown-header">Export Options:</div>
-                <a class="dropdown-item" href="#"><i class="fas fa-file-csv mr-2"></i>Export to CSV</a>
-                <a class="dropdown-item" href="#"><i class="fas fa-file-excel mr-2"></i>Export to Excel</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#"><i class="fas fa-print mr-2"></i>Print List</a>
+    <div class="card-header py-3">
+        <div class="row align-items-center">
+            <div class="col">
+                <h6 class="m-0 font-weight-bold text-primary">Employees</h6>
+            </div>
+            <div class="col-auto">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-cog"></i> Bulk Actions
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        {% if user.is_principal %}
+                        <a class="dropdown-item" href="{% url 'bulk_add_employees' %}">
+                            <i class="fas fa-file-upload mr-2"></i>Bulk Add Employees
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        {% endif %}
+                        <a class="dropdown-item" href="{% url 'export_employees' %}">
+                            <i class="fas fa-file-export mr-2"></i>Export to CSV
+                        </a>
+                        {% if user.is_principal %}
+                        <a class="dropdown-item" href="{% static 'templates/employee_template.csv' %}" download>
+                            <i class="fas fa-download mr-2"></i>Download Template
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -104,19 +123,19 @@
                     </a>
                 </li>
                 {% endif %}
-                
+
                 {% for num in employees.paginator.page_range %}
                     {% if employees.number == num %}
                     <li class="page-item active">
-                        <a class="page-link" href="#">{{ num }}</a>
+                        <span class="page-link">{{ num }}</span>
                     </li>
-                    {% elif num > employees.number|add:'-3' and num < employees.number|add:'3' %}
+                    {% else %}
                     <li class="page-item">
                         <a class="page-link" href="?page={{ num }}">{{ num }}</a>
                     </li>
                     {% endif %}
                 {% endfor %}
-                
+
                 {% if employees.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ employees.next_page_number }}" aria-label="Next">
@@ -150,14 +169,14 @@
 <div class="modal fade" id="deleteEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="deleteEmployeeModalLabel">Confirm Delete</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete <strong id="employeeName"></strong>? This action cannot be undone.</p>
+                Are you sure you want to delete <span id="employeeName"></span>?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -167,48 +186,83 @@
     </div>
 </div>
 
+{% endblock %}
+
 {% block extra_js %}
 <script>
     $(document).ready(function() {
+        // Initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+
         // Initialize DataTable
         $('#employeeTable').DataTable({
-            "paging": false,
-            "ordering": true,
-            "info": false,
-            "searching": true
+            "order": [[1, "asc"]], // Sort by name by default
+            "pageLength": 25,
+            "language": {
+                "search": "Search employees:",
+                "lengthMenu": "Show _MENU_ employees per page",
+            }
         });
-        
-        // Delete employee
-        var employeeIdToDelete;
-        
+
+        // Get CSRF token
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Handle delete employee
         $('.delete-employee').click(function() {
-            employeeIdToDelete = $(this).data('id');
+            var employeeId = $(this).data('id');
             var employeeName = $(this).data('name');
             $('#employeeName').text(employeeName);
+            $('#confirmDelete').data('id', employeeId);
             $('#deleteEmployeeModal').modal('show');
         });
-        
+
         $('#confirmDelete').click(function() {
+            var employeeId = $(this).data('id');
+            var button = $(this);
+            button.prop('disabled', true); // Prevent double clicks
+            
             $.ajax({
-                url: '/accounts/employees/' + employeeIdToDelete + '/delete/',
-                type: 'POST',
+                url: '/accounts/employees/' + employeeId + '/delete/',
+                method: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
+                    'X-CSRFToken': csrftoken
                 },
                 success: function(response) {
                     if (response.success) {
                         $('#deleteEmployeeModal').modal('hide');
-                        location.reload();
+                        // Fade out and remove the row
+                        $('button.delete-employee[data-id="' + employeeId + '"]')
+                            .closest('tr')
+                            .fadeOut(400, function() {
+                                $(this).remove();
+                                // Show success message
+                                const alert = $('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                                    'Employee deleted successfully.' +
+                                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                    '<span aria-hidden="true">&times;</span></button></div>');
+                                $('.card-body').prepend(alert);
+                                // Auto dismiss after 3 seconds
+                                setTimeout(function() {
+                                    alert.alert('close');
+                                }, 3000);
+                            });
                     } else {
                         alert('Error: ' + response.error);
                     }
                 },
                 error: function(xhr) {
-                    alert('Error: ' + xhr.responseJSON.error);
+                    let errorMessage = 'Error deleting employee. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    }
+                    alert(errorMessage);
+                },
+                complete: function() {
+                    button.prop('disabled', false); // Re-enable the button
+                    $('#deleteEmployeeModal').modal('hide');
                 }
             });
         });
     });
 </script>
 {% endblock %}
-{% endblock %} 

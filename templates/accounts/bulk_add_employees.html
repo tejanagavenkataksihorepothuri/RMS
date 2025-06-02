@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">Bulk Add Employees</h3>
+            <div>
+                <a href="{% static 'templates/employee_template.csv' %}" class="btn btn-info" download>
+                    <i class="fas fa-download"></i> Download Template
+                </a>
+                <a href="{% url 'export_employees' %}" class="btn btn-success">
+                    <i class="fas fa-file-export"></i> Export Current Employees
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="csv_file">Upload CSV File</label>
+                            <input type="file" class="form-control-file" id="csv_file" name="csv_file" accept=".csv" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="fas fa-upload"></i> Upload and Process
+                        </button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">CSV File Format Instructions</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>The CSV file should contain the following columns:</p>
+                            <ul>
+                                <li><strong>email</strong> - Unique email address (required)</li>
+                                <li><strong>password</strong> - Initial password (required)</li>
+                                <li><strong>first_name</strong> - First name (required)</li>
+                                <li><strong>last_name</strong> - Last name (required)</li>
+                                <li><strong>id_number</strong> - Unique ID number (required)</li>
+                                <li><strong>department</strong> - Department name or code (optional)</li>
+                                <li><strong>phone_number</strong> - Phone number (optional)</li>
+                                <li><strong>role</strong> - One of: STUDENT, FACULTY, HOD, PRINCIPAL, NON_TEACHING (required)</li>
+                            </ul>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-info-circle"></i> Make sure your CSV file is UTF-8 encoded and the column names match exactly.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'employee_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Employee List
+        </a>
+    </div>
+</div>
+
+<!-- Sample CSV Template -->
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Sample CSV Format</h5>
+        </div>
+        <div class="card-body">
+            <p>Here's a sample of how your CSV should be formatted:</p>
+            <pre class="bg-light p-3 rounded">email,password,first_name,last_name,id_number,department,phone_number,role
+john.doe@example.com,password123,John,Doe,EMP001,Computer Science,1234567890,FACULTY
+jane.smith@example.com,password456,Jane,Smith,EMP002,Electronics,9876543210,FACULTY</pre>
+            <p class="mt-3">
+                <i class="fas fa-lightbulb text-warning"></i> 
+                <strong>Tip:</strong> Download the template above and modify it with your data for best results.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

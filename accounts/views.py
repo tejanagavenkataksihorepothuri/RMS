@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
@@ -505,3 +505,35 @@ def register(request):
         'departments': departments,
     }
     return render(request, 'accounts/register.html', context)
+
+@login_required
+def export_employees(request):
+    """Export employees data as CSV."""
+    if not request.user.is_authenticated or not (request.user.is_principal or request.user.is_hod):
+        messages.error(request, "You don't have permission to access this page.")
+        return redirect('dashboard')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="employees.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['email', 'first_name', 'last_name', 'id_number', 'department', 'phone_number', 'role'])
+
+    # Get employees based on user's role
+    if request.user.is_principal:
+        employees = User.objects.exclude(is_superuser=True)
+    else:  # HOD
+        employees = User.objects.filter(department=request.user.department).exclude(is_superuser=True)
+
+    for employee in employees:
+        writer.writerow([
+            employee.email,
+            employee.first_name,
+            employee.last_name,
+            employee.id_number,
+            employee.department.name if employee.department else '',
+            employee.phone_number or '',
+            employee.role
+        ])
+
+    return response
